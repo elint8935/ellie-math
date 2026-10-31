@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ellie's Crew Math</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Crew Math">
+<meta name="theme-color" content="#e6338f">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%92%83%3C/text%3E%3C/svg%3E">
+<style>
+:root{--bg:#fff4fa;--surface:#fff;--ink:#2a1636;--muted:#6d5a78;--pink:#e6338f;--violet:#7a3df0;--lime:#c6f432;--ok:#12805c;--bad:#c42b4a;--line:#f0cfe3;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#150a20;--surface:#241236;--ink:#fbeaf6;--muted:#b9a2c8;--pink:#ff5fb0;--violet:#a98bff;--ok:#4be0a8;--bad:#ff7d98;--line:#44275f;color-scheme:dark}}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Trebuchet MS","Avenir Next",system-ui,sans-serif;line-height:1.4}
+main{max-width:520px;margin:0 auto;padding:16px}
+h1{font-size:1.8rem;margin:4px 0;letter-spacing:-.5px;font-family:Impact,"Arial Black",sans-serif;font-weight:900;background:linear-gradient(90deg,var(--pink),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--muted);margin:0 0 12px}
+.tabs{margin-bottom:12px}
+#sel{width:100%;font:inherit;font-weight:700;font-size:1.05rem;padding:12px;border-radius:14px;border:2px solid var(--pink);background:var(--surface);color:var(--ink)}
+.tag{display:inline-block;font-weight:700;color:var(--violet);margin-bottom:6px}
+.tab{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:8px 10px;font:inherit;font-weight:700;cursor:pointer;text-align:left}
+.tab small{display:block;font-weight:400;color:var(--muted);font-size:.78rem}
+.tab[aria-pressed=true]{border-color:var(--pink);background:linear-gradient(135deg,var(--pink),var(--violet));color:#fff}
+.tab[aria-pressed=true] small{color:#fde7f4}
+.stats{display:flex;justify-content:space-between;font-weight:700;margin:6px 2px 10px}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:16px}
+.stage{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin:12px 0;padding:12px;border-radius:14px;background:linear-gradient(180deg,#2b1247,#4a1a6b)}
+.d{width:36px;height:36px;border-radius:50%;background:#5b3f75;border:3px solid #8d6ea8;display:grid;place-items:center;font-size:19px;opacity:.75}
+.d.on{background:#c6f432;border-color:#fff;box-shadow:0 0 10px #c6f432;opacity:1}
+.d.arr{opacity:1;background:#7a3d9e}
+.row{display:flex;gap:5px;justify-content:center;width:100%}
+svg.fig{display:block;margin:10px auto;max-width:100%;height:auto;background:var(--bg);border-radius:12px;border:2px solid var(--line)}
+svg .ln{stroke:var(--ink);stroke-width:3;stroke-linecap:round;fill:none}
+svg .ac{stroke:var(--pink);stroke-width:3;fill:none}
+svg text{fill:var(--ink);font:700 15px "Trebuchet MS",sans-serif}
+.q{font-size:1.15rem;font-weight:700;margin:0}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.ch{font:inherit;font-size:1.25rem;font-weight:800;padding:14px 8px;border-radius:14px;border:2px solid var(--violet);background:var(--surface);color:var(--ink);cursor:pointer;min-height:56px}
+.ch.right{background:var(--ok);border-color:var(--ok);color:#fff}
+.ch.wrong{background:var(--bad);border-color:var(--bad);color:#fff}
+.fb{margin-top:12px;font-weight:700;min-height:3.2em}
+.hint{color:var(--muted);font-weight:400;display:block}
+.next{margin-top:8px;width:100%;font:inherit;font-weight:800;font-size:1.1rem;padding:14px;border:0;border-radius:14px;background:var(--pink);color:#fff;cursor:pointer}
+.frac{display:inline-flex;flex-direction:column;align-items:center;line-height:1.05;vertical-align:middle}
+.frac i{font-style:normal;border-top:3px solid currentColor;padding-top:1px}
+button:focus-visible{outline:3px solid var(--lime);outline-offset:2px}
+.crew{display:flex;flex-wrap:wrap;gap:6px 10px;justify-content:center;margin-top:16px;font-size:.8rem;color:var(--muted)}
+.crew span{white-space:nowrap}
+
+#card{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.pts{font-size:1.2rem}.pts b{font-size:2rem}.pts span{color:var(--muted);font-size:1rem}
+.bar{height:12px;border-radius:8px;background:var(--line);overflow:hidden;margin:8px 0}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--pink),var(--violet))}
+.goal,.sm{font-size:.9rem;color:var(--muted)}.goal select{font:inherit;font-weight:700;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.btns{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:10px 0 6px}
+.btns button,.rvw,.day{font:inherit;font-weight:700;padding:10px 4px;border-radius:12px;border:2px solid var(--violet);background:var(--surface);color:var(--ink);cursor:pointer}
+.dim{opacity:.55}
+.note{background:var(--bad);color:#fff;padding:10px;border-radius:12px;margin-bottom:10px;font-weight:700}
+.badge{display:inline-block;background:var(--violet);color:#fff;border-radius:20px;padding:2px 12px;font-weight:700;margin-bottom:8px}
+.rvw{width:100%;margin-top:10px;font-weight:600}
+.rev{line-height:1.6;margin:10px 0}
+.day{display:block;width:100%;margin:6px 0;text-align:left;padding:10px 12px}.day small{float:right}.day.dn{opacity:.6}
+details{border:2px solid var(--line);border-radius:12px;padding:8px 12px;margin:8px 0}summary{font-weight:700;cursor:pointer}
+.tbl{width:100%;border-collapse:collapse;font-size:.9rem}.tbl td,.tbl th{padding:4px;border-bottom:1px solid var(--line);text-align:left}
+.mq{border-bottom:1px solid var(--line);padding:6px 0;font-size:.9rem}
+.sumg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}.sumg div{background:var(--bg);border-radius:12px;padding:8px;text-align:center;font-size:.85rem}.sumg b{display:block;font-size:1.3rem}
+input[type=password],input[type=number],input[type=text],input[type=time]{width:100%;font:inherit;padding:10px;margin:6px 0;border-radius:10px;border:2px solid var(--line);background:var(--surface);color:var(--ink)}
+.plink{background:none;border:0;color:var(--muted);text-decoration:underline;font:inherit;cursor:pointer}
+#sel{margin-bottom:0}
+</style>
+</head>
+<body>
+<main>
+  <h1>Ellie's Crew Math</h1>
+  <p class="sub">Earn points for squishies. No looking up answers, think it through!</p>
+  <div class="tabs" id="tabs"></div>
+  <div class="card" id="top" style="margin-bottom:12px"></div>
+  <div class="card" id="card"></div>
+  <div class="crew" id="crew"></div>
+  <p class="crew"><button class="plink" id="plink">Parent</button><span id="sv"></span></p>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const pick=a=>a[rnd(0,a.length-1)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
+const CREW=[{n:'Ellie',e:'🦊'},{n:'Denise',e:'🐰'},{n:'Tyrell',e:'🐧'},{n:'Ashley',e:'🐨'},{n:'Brooke',e:'🦦'},{n:'Milo',e:'🐶'},{n:'Daisy',e:'🐕'},{n:'Twinkle',e:'🐱'},{n:'Jayden',e:'🦁'},{n:'Lexie',e:'🐼'},{n:'Kennedi',e:'🦉'},{n:'Dianara',e:'🐸'}];
+const names=k=>shuffle(CREW).slice(0,k).map(c=>c.n);
+const F=(n,d)=>`<span class="frac">${n}<i>${d}</i></span>`;
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+const av=(i,cls)=>`<div class="d ${cls||''}">${CREW[i%CREW.length].e}</div>`;
+const stage=(total,on)=>`<div class="stage">${Array.from({length:total},(_,i)=>av(i,i<on?'on':'')).join('')}</div>`;
+const grid=(r,c)=>`<div class="stage">${Array.from({length:r},(_,y)=>`<div class="row">${Array.from({length:c},(_,x)=>av(y*c+x,'arr')).join('')}</div>`).join('')}</div>`;
+// choice builders: return [{k,h}]
+function numCh(ans,near,fmt){fmt=fmt||(v=>String(v));const s=new Set([ans]);let t=0;while(s.size<4&&t++<80){const v=ans+pick(near);if(v>0&&v!==ans)s.add(v)}return shuffle([...s]).map(v=>({k:v,h:fmt(v)}))}
+function strCh(ans,cands,fmt){fmt=fmt||(v=>v);const s=new Set([ans]);shuffle(cands).forEach(c=>{if(s.size<4)s.add(c)});return shuffle([...s]).map(v=>({k:v,h:fmt(v)}))}
+const fracFmt=o=>{const[a,b]=o.split('/');return F(a,b)};
+const Q=(html,answer,choices,hint)=>({html,answer,choices,hint});
+
+const DOMS={mix:'Start here',num:'Number & Operations (focus)',alg:'Algebra',meas:'Measurement & Data',geo:'Geometry (focus)'};
+const modes={
+ frac:{dom:'num',name:'Fractions',sub:'Parts of the crew',gen(){
+  const t=rnd(0,4),n=pick([4,5,6,8,10,12]);
+  if(t===0){const k=rnd(1,n-1),g=gcd(k,n),ans=k/g+'/'+n/g,c=[];
+   for(let i=0;i<30;i++){const kk=rnd(1,n-1),gg=gcd(kk,n);c.push(kk/gg+'/'+n/gg)}
+   return Q(`<p class="q">${n} friends are on stage. ${k} of them are doing the spin (the glowing ones). What fraction is spinning?</p>`+stage(n,k),ans,strCh(ans,c,fracFmt),`${k} out of ${n} friends spin. The top number counts the spinners, the bottom is the whole crew.`+(g>1?' You can simplify it too!':''))}
+  if(t===1){const d=pick([2,3,4,5,6]),num=rnd(1,d-1),tot=d*rnd(1,Math.floor(12/d)||1),ans=tot/d*num,[a]=names(1);
+   return Q(`<p class="q">${tot} friends are playing. ${F(num,d)} of them are chasing ${a}. How many friends are chasing?</p>`+stage(tot,0),ans,numCh(ans,[-3,-2,-1,1,2,3,tot/d]),`Split ${tot} friends into ${d} equal groups: ${tot} ÷ ${d} = ${tot/d} each. Take ${num} group${num>1?'s':''}: ${tot/d} × ${num} = ${ans}.`)}
+  if(t===2){const d=pick([2,3,4,5]),m=rnd(2,4),num=rnd(1,d-1),big=d*m,[a]=names(1);
+   return Q(`<p class="q">${a} ate ${F(num,d)} of a treat bag. The bag is cut into ${big} equal pieces instead. ${F(num,d)} = ${F('?',big)}. What goes on top?</p>`,num*m,numCh(num*m,[-2,-1,1,2,m,-m]),`Multiply the top and bottom by the same number: ${d} × ${m} = ${big}, so ${num} × ${m} = ${num*m}.`)}
+  if(t===4){const d=pick([5,6,8,10,12]),s=rnd(2,d-1),e=rnd(1,s-1),[x,y]=names(2),ans=(s-e)+'/'+d,c=[];for(let i=0;i<30;i++)c.push(rnd(1,d)+'/'+d);
+   return Q(`<p class="q">${x} has ${F(s,d)} of a pizza and gives ${F(e,d)} of the pizza to ${y}. How much pizza does ${x} have left?</p>`,ans,strCh(ans,c,fracFmt),`The pieces are the same size, so subtract the tops: ${s} − ${e} = ${s-e}. The bottom stays ${d}.`)}
+  const d=pick([5,6,8,10,12]),a1=rnd(1,Math.floor(d/2)-0||1),b1=rnd(1,d-a1-1||1),[x,y]=names(2),ans=(a1+b1)+'/'+d,c=[];
+  for(let i=0;i<30;i++)c.push(rnd(1,d)+'/'+d);
+  return Q(`<p class="q">${x} ate ${F(a1,d)} of a pie and ${y} ate ${F(b1,d)}. How much did they eat together?</p>`,ans,strCh(ans,c,fracFmt),`The pieces are the same size, so just add the tops: ${a1} + ${b1} = ${a1+b1}. The bottom stays ${d}.`)
+ }},
+ arr:{dom:'num',name:'Arrays',sub:'Multiply & divide',gen(){
+  const r=rnd(2,6),c=rnd(3,8),t=r*c;
+  if(Math.random()<.5)return Q(`<p class="q">The crew lines up in ${r} rows with ${c} friends in each row. How many friends in all?</p>`+grid(r,c),t,numCh(t,[-c,c,-r,r,-1,1,2]),`${r} rows × ${c} friends = ${t}. Try skip counting by ${c}s!`);
+  return Q(`<p class="q">${t} friends make ${r} equal rows. How many are in each row?</p>`+grid(r,c),c,numCh(c,[-2,-1,1,2,3]),`${t} ÷ ${r} = ${c}, because ${r} × ${c} = ${t}.`)
+ }},
+ time:{dom:'meas',name:'Time & Counts',sub:'Add, subtract, convert',gen(){
+  const t=rnd(0,3),[a,b]=names(2);
+  if(t===0){const p=rnd(3,9);return Q(`<p class="q">${a} practices ${p} dance phrases. Each phrase is 8 counts. How many counts is that?</p>`,p*8,numCh(p*8,[-8,8,-4,4,-16,16]),`${p} × 8 = ${p*8}. Count by 8s: 8, 16, 24…`)}
+  if(t===1){const x=rnd(120,480),y=rnd(120,480);return Q(`<p class="q">${a} practices ${x} minutes on Monday and ${y} on Tuesday. How many minutes in all?</p>`,x+y,numCh(x+y,[-100,100,-10,10,-1,1]),`Add hundreds, tens, then ones: ${x} + ${y} = ${x+y}.`)}
+  if(t===2){const h=rnd(2,5),m=rnd(10,45);return Q(`<p class="q">${a} and ${b} watch a movie that is ${h} hours and ${m} minutes long. How many minutes is that?</p>`,h*60+m,numCh(h*60+m,[-60,60,-10,10,-30,30]),`1 hour = 60 minutes. ${h} × 60 = ${h*60}, plus ${m} = ${h*60+m}.`)}
+  const big=rnd(300,900),sm=rnd(100,big-50);return Q(`<p class="q">${a} has ${big} stickers and gives ${sm} to ${b}. How many are left?</p>`,big-sm,numCh(big-sm,[-100,100,-10,10,-1,1]),`${big} − ${sm} = ${big-sm}. Subtract the hundreds first, then the rest.`)
+ }},
+ big:{dom:'num',name:'Big Numbers',sub:'Place value & rounding',gen(){
+  const t=rnd(0,2),[a]=names(1);
+  if(t===0){const s=rnd(2,6),f=rnd(12,48);return Q(`<p class="q">${a} gives ${f} treats at each of ${s} parties. How many treats in total?</p>`,s*f,numCh(s*f,[-10,10,-s,s,-20,20]),`Break ${f} into tens and ones: ${s} × ${Math.floor(f/10)*10} = ${s*Math.floor(f/10)*10}, plus ${s} × ${f%10} = ${s*(f%10)}. Total ${s*f}.`)}
+  if(t===1){const n=rnd(1200,9800),ans=Math.round(n/1000)*1000;return Q(`<p class="q">${n.toLocaleString()} people came to see ${a}'s show. Round to the nearest thousand.</p>`,ans,numCh(ans,[-2000,-1000,1000,2000],v=>v.toLocaleString()),`Look at the hundreds digit. 5 or more rounds up, 4 or less rounds down.`)}
+  const n=rnd(10000,99999),pl=pick([['thousands',1000],['hundreds',100],['tens',10]]),dgt=Math.floor(n/pl[1])%10;
+  return Q(`<p class="q">In the number ${n.toLocaleString()}, what digit is in the ${pl[0]} place?</p>`,dgt,numCh(dgt+5,[-5,-4,-3,-2,-1,1,2,3,4]).map(c=>c).length?strCh(dgt,[0,1,2,3,4,5,6,7,8,9].filter(v=>v!==dgt),v=>String(v)).map(c=>({k:c.k,h:c.h})):[],`Count places from the right: ones, tens, hundreds, thousands. The ${pl[0]} digit is ${dgt}.`)
+ }},
+ ang:{dom:'geo',name:'Angles',sub:'Types & missing angles',gen(){
+  const t=rnd(0,2);
+  if(t===0){const kind=pick(['acute','right','obtuse','straight']),a={acute:rnd(20,80),right:90,obtuse:rnd(100,165),straight:180}[kind],r=a*Math.PI/180,x=100+80*Math.cos(r),y=110-80*Math.sin(r);
+   const fig=`<svg class="fig" viewBox="0 0 220 140" width="260"><path class="ln" d="M100 110 L190 110 M100 110 L${a===180?10:x} ${a===180?110:y}"/><path class="ac" d="M130 110 A30 30 0 ${a>180?1:0} 0 ${100+30*Math.cos(r)} ${110-30*Math.sin(r)}"/></svg>`;
+   return Q(`<p class="q">${pick(CREW).n}'s ears make this angle. What kind of angle is it?</p>`+fig,kind,strCh(kind,['acute','right','obtuse','straight'].filter(k=>k!==kind).concat(['acute','right','obtuse','straight']),v=>v),`Acute is smaller than a square corner (90°). Right is exactly 90°. Obtuse is bigger than 90° but less than a straight line. Straight is 180°.`)}
+  if(t===2){const a=rnd(2,16)*10,r=a*Math.PI/180;let tk='';
+   for(let d=0;d<=180;d+=10){const c=Math.cos(d*Math.PI/180),sn=Math.sin(d*Math.PI/180),len=d%30===0?10:6;
+    tk+=`<path d="M${110+90*c} ${115-90*sn}L${110+(90-len)*c} ${115-(90-len)*sn}" stroke="currentColor" stroke-width="1.5"/>`;
+    if(d%30===0)tk+=`<text x="${110+104*c}" y="${115-104*sn+4}" text-anchor="middle" style="font-size:11px">${d}</text>`}
+   const fig=`<svg class="fig" viewBox="-10 0 240 135" width="280"><path d="M20 115A90 90 0 0 1 200 115" fill="none" stroke="currentColor" stroke-width="2"/><path class="ln" d="M10 115H210"/>${tk}<path class="ac" d="M110 115L${110+90*Math.cos(r)} ${115-90*Math.sin(r)}"/></svg>`;
+   return Q(`<p class="q">${pick(CREW).n} is measuring an angle with a protractor. How many degrees is the pink angle?</p>`+fig,a,strCh(a,[180-a,a+10,a-10,a+20,a-20].filter(v=>v>0&&v<=180&&v!==a),v=>v+'°'),`Start at 0 on the side where the angle begins and count up by 10s to the pink line: ${a}°.`)}
+  const tot=pick([90,180]),a=tot===90?rnd(15,75):rnd(40,140),ans=tot-a,r=a*Math.PI/180,x=100+80*Math.cos(r),y=110-80*Math.sin(r);
+  const fig=`<svg class="fig" viewBox="0 0 220 140" width="260"><path class="ln" d="M100 110 L190 110 ${tot===90?'M100 110 L100 25':'M100 110 L10 110'} M100 110 L${x} ${y}"/><text x="140" y="100">${a}°</text><text x="${tot===90?70:70}" y="${tot===90?80:90}">?</text></svg>`;
+  return Q(`<p class="q">${pick(CREW).n} makes a ${tot===90?'square corner (90°)':'straight line (180°)'} split into two angles. One is ${a}°. How big is the other angle?</p>`+fig,ans,numCh(ans,[-20,-10,10,20,-5,5],v=>v+'°'),`The two angles add up to ${tot}°. ${tot} − ${a} = ${ans}.`)
+ }},
+ area:{dom:'meas',name:'Area & Perimeter',sub:'Rectangles',gen(){
+  const w=rnd(3,10),h=rnd(2,7),[a]=names(1),t=rnd(0,2),s=22;
+  const fig=`<svg class="fig" viewBox="0 0 260 190" width="260"><rect x="20" y="20" width="${w*s}" height="${h*s}" fill="none" class="ln"/><text x="${20+w*s/2-12}" y="14">${w} m</text><text x="${24+w*s}" y="${20+h*s/2}">${h} m</text></svg>`;
+  if(t===0)return Q(`<p class="q">${a}'s dance floor is ${w} m long and ${h} m wide. What is the area?</p>`+fig,w*h,numCh(w*h,[-w,w,-h,h,2*(w+h)-w*h||1,-2]).map(c=>({k:c.k,h:c.k+' sq m'})),`Area = length × width = ${w} × ${h} = ${w*h} square meters.`);
+  if(t===1)return Q(`<p class="q">${a} puts a fence around the dance floor (${w} m by ${h} m). How many meters of fence?</p>`+fig,2*(w+h),numCh(2*(w+h),[-4,-2,2,4,-w,w,w*h-2*(w+h)||3]).map(c=>({k:c.k,h:c.k+' m'})),`Perimeter = add all four sides: ${w} + ${h} + ${w} + ${h} = ${2*(w+h)}. Or 2 × (${w} + ${h}).`);
+  const A=w*h;return Q(`<p class="q">${a}'s garden has an area of ${A} sq m. It is ${w} m long. How wide is it?</p>`,h,numCh(h,[-2,-1,1,2,3]).map(c=>({k:c.k,h:c.k+' m'})),`Area = length × width, so width = ${A} ÷ ${w} = ${h}.`)
+ }},
+ dec:{dom:'num',name:'Decimals',sub:'Tenths & hundredths',gen(){
+  const t=rnd(0,3),[a]=names(1);
+  if(t===0){const n=rnd(1,9),ans=(n/10).toFixed(1),c=Array.from({length:12},()=>(rnd(1,9)/10).toFixed(1)).concat([(n/100).toFixed(2)]);return Q(`<p class="q">${a} ate ${F(n,10)} of a pizza. Write that as a decimal.</p>`,ans,strCh(ans,c),`Tenths go right after the decimal point: ${n}/10 = ${ans}.`)}
+  if(t===1){const n=rnd(11,99);if(n%10===0)return modes.dec.gen();const ans=(n/100).toFixed(2),c=[(n/10).toFixed(2),(n/1000).toFixed(3),'0.'+String(n).split('').reverse().join(''),(0.01*(n+rnd(1,5))).toFixed(2),(0.01*(n-rnd(1,5))).toFixed(2)];return Q(`<p class="q">${a} saved ${F(n,100)} of a dollar. Which decimal is the same?</p>`,ans,strCh(ans,c),`Hundredths use two places after the decimal point: ${n}/100 = ${ans}.`)}
+  if(t===2){let x=rnd(11,99)/10,y=rnd(11,99)/10;if(x===y)y+=.1;const ans=Math.max(x,y).toFixed(1);return Q(`<p class="q">${a} ran ${x.toFixed(1)} km and a friend ran ${y.toFixed(1)} km. Who ran farther? Pick the bigger number.</p>`,ans,shuffle([...new Set([x.toFixed(1),y.toFixed(1),(x+y).toFixed(1),Math.abs(x-y).toFixed(1)])]).map(v=>({k:v,h:v})),`Compare the ones place first, then the tenths. ${ans} is bigger.`)}
+  const c1=rnd(1,9),c2=rnd(1,9),dec=(c1/10+c2/100).toFixed(2),ans=(c1*10+c2)+'/100',c=[(c1+c2)+'/100',c1+c2+'/10',(c1*10+c2)+'/10',(c2*10+c1)+'/100'];
+  return Q(`<p class="q">${a} has $${dec}. What fraction of a dollar is that?</p>`,ans,strCh(ans,c,fracFmt),`${dec} is ${c1*10+c2} hundredths, so it is ${c1*10+c2}/100.`)
+ }},
+ fac:{dom:'alg',name:'Factors & Patterns',sub:'Multiples and rules',gen(){
+  const t=rnd(0,2),[a]=names(1);
+  if(t===0){const n=pick([12,18,20,24,30,36]),fs=[];for(let i=1;i<=n;i++)if(n%i===0)fs.push(i);const ans=pick(fs.filter(f=>f>1&&f<n)),nf=[];for(let i=2;i<n;i++)if(n%i)nf.push(i);return Q(`<p class="q">${a} wants to split ${n} treats into equal groups. Which number is a factor of ${n}?</p>`,ans,strCh(ans,nf,v=>String(v)),`A factor divides evenly with nothing left over. ${n} ÷ ${ans} = ${n/ans}.`)}
+  if(t===1){const m=rnd(3,9),ans=m*rnd(3,9),c=[];for(let i=0;i<20;i++){const v=rnd(10,80);if(v%m)c.push(v)}return Q(`<p class="q">${a} counts by ${m}s. Which number will ${a} say?</p>`,ans,strCh(ans,c,v=>String(v)),`Multiples of ${m}: ${m}, ${m*2}, ${m*3}, ${m*4}... ${ans} is ${ans/m} × ${m}.`)}
+  const s=rnd(2,20),r=rnd(3,9),seq=[0,1,2,3].map(i=>s+r*i),ans=s+r*4;return Q(`<p class="q">${a} builds a pattern: <b>${seq.join(', ')}, ___</b>. What number comes next?</p>`,ans,numCh(ans,[-r,r,-1,1,2,-2]),`The rule is add ${r} each time. ${seq[3]} + ${r} = ${ans}.`)
+ }},
+ mult:{dom:'num',name:'Big Multiplication',sub:'2- and 3-digit numbers',gen(){
+  const [a]=names(1),t=rnd(0,2);
+  if(t===0){const x=rnd(120,980),y=rnd(2,9),ans=x*y,h=Math.floor(x/100)*100,te=(Math.floor(x/10)%10)*10,o=x%10;
+   return Q(`<p class="q">${a} packs ${x} treats in each box. There are ${y} boxes. How many treats in all?</p>`,ans,numCh(ans,[-100,100,-10,10,-y*10,y*10,-y,y]),`Multiply each place value: ${h} × ${y} = ${h*y}, ${te} × ${y} = ${te*y}, ${o} × ${y} = ${o*y}. Add them: ${ans}.`)}
+  if(t===1){const x=rnd(12,49),y=rnd(11,29),ans=x*y,ty=Math.floor(y/10)*10;
+   return Q(`<p class="q">${a} runs ${x} laps every day. How many laps in ${y} days?</p>`,ans,numCh(ans,[-x,x,-10,10,-y,y,-20,20]),`Split ${y} into ${ty} and ${y-ty}: ${x} × ${ty} = ${x*ty}, ${x} × ${y-ty} = ${x*(y-ty)}. Add them: ${ans}.`)}
+  const d=rnd(3,9),qv=rnd(12,99),n=d*qv;
+  return Q(`<p class="q">${a} shares ${n} berries equally among ${d} friends. How many berries does each friend get?</p>`,qv,numCh(qv,[-10,-1,1,10,2,-2]),`${n} ÷ ${d} = ${qv}. Check it: ${qv} × ${d} = ${n}.`)
+ }},
+ multi:{dom:'alg',name:'Multi-step Puzzles',sub:'Remainders & more',gen(){
+  const [a,b]=names(2),t=rnd(0,3);
+  if(t===0){const per=rnd(4,9),n=per*rnd(3,8)+rnd(1,per-1),ans=Math.floor(n/per)+1;
+   return Q(`<p class="q">${a} has ${n} stickers. Each sheet holds ${per} stickers. How many sheets are needed to hold all of them?</p>`,ans,numCh(ans,[-2,-1,1,2,3]),`${n} ÷ ${per} = ${Math.floor(n/per)} with ${n%per} left over. The leftovers still need a sheet, so round up to ${ans}.`)}
+  if(t===1){const g=rnd(3,8),n=g*rnd(4,9)+rnd(1,g-1),r=n%g;
+   return Q(`<p class="q">${n} treats are shared equally by ${g} animals. How many treats are left over?</p>`,r,numCh(r,[-2,-1,1,2,3]),`${n} ÷ ${g} = ${Math.floor(n/g)} with ${r} left over. The remainder is the answer: ${r}.`)}
+  if(t===2){const p=rnd(2,9),k=rnd(2,6),e=rnd(1,8),tot=k*p+e,pay=Math.ceil((tot+1)/10)*10,ans=pay-tot;
+   return Q(`<p class="q">${a} buys ${k} notebooks for $${p} each and a pen for $${e}. ${a} pays with $${pay}. How much change does ${a} get?</p>`,ans,numCh(ans,[-2,-1,1,2,3,-5,5,10],v=>'$'+v),`Step 1: ${k} × $${p} = $${k*p}. Step 2: add the pen: $${k*p} + $${e} = $${tot}. Step 3: $${pay} − $${tot} = $${ans}.`)}
+  const t1=rnd(2,5),c1=rnd(12,30);let c2=rnd(15,60);if((t1*c1+c2)%2)c2++;const tot=t1*c1+c2,ans=tot/2;
+  return Q(`<p class="q">${a} collects ${c1} acorns a day for ${t1} days, then finds ${c2} more. ${a} shares all the acorns equally with ${b}. How many acorns does each animal get?</p>`,ans,numCh(ans,[-10,10,-5,5,-1,1,c2]),`Step 1: ${t1} × ${c1} = ${t1*c1}. Step 2: add ${c2}: ${tot}. Step 3: share between 2: ${tot} ÷ 2 = ${ans}.`)
+ }},
+ conv:{dom:'meas',name:'Unit Conversions',sub:'Customary & metric',gen(){
+  const U=[['meter','meters','centimeters',100],['kilometer','kilometers','meters',1000],['kilogram','kilograms','grams',1000],['liter','liters','milliliters',1000],['foot','feet','inches',12],['yard','yards','feet',3],['pound','pounds','ounces',16],['gallon','gallons','quarts',4],['hour','hours','minutes',60]];
+  const [s1,p,sm,f]=pick(U),n=rnd(2,9),[a]=names(1);
+  if(Math.random()<.5)return Q(`<p class="q">${a} wonders: ${n} ${p} is how many ${sm}?</p>`,n*f,numCh(n*f,[-f,f,-n,n,-10,10,-2*f,2*f]),`1 ${s1} = ${f} ${sm}. So ${n} × ${f} = ${n*f}.`);
+  return Q(`<p class="q">${a} wonders: ${n*f} ${sm} is how many ${p}?</p>`,n,numCh(n,[-2,-1,1,2,3]),`1 ${s1} = ${f} ${sm}. So ${n*f} ÷ ${f} = ${n}.`)
+ }},
+ line:{dom:'meas',name:'Line Plots',sub:'Read the data',gen(){
+  const lab=['0','1/4','1/2','3/4','1'],cnt=lab.map(()=>rnd(0,4));cnt[rnd(0,4)]=rnd(2,5);if(cnt.reduce((x,y)=>x+y)<6)cnt[2]+=3;
+  let sv='<path class="ln" d="M15 118H245"/>';
+  lab.forEach((l,i)=>{const x=30+i*50;sv+=`<path class="ln" d="M${x} 112V124"/><text x="${x}" y="146" text-anchor="middle">${l}</text>`;for(let j=0;j<cnt[i];j++)sv+=`<text x="${x}" y="${106-j*18}" text-anchor="middle">X</text>`});
+  const fig=`<svg class="fig" viewBox="0 0 260 155" width="280">${sv}</svg>`,tot=cnt.reduce((x,y)=>x+y),t=rnd(0,2),[a]=names(1);
+  const intro=`${a} measured ribbons to the nearest quarter inch. Each X is one ribbon.`;
+  if(t===0){const ks=[0,1,2,3,4].filter(i=>cnt[i]>0),k=pick(ks);return Q(`<p class="q">${intro} How many ribbons are ${lab[k]} inch long?</p>`+fig,cnt[k],numCh(cnt[k],[-2,-1,1,2,3]),`Find ${lab[k]} on the number line and count the X marks above it: ${cnt[k]}.`)}
+  if(t===1)return Q(`<p class="q">${intro} How many ribbons did ${a} measure in all?</p>`+fig,tot,numCh(tot,[-3,-2,-1,1,2,3]),`Count every X: ${cnt.join(' + ')} = ${tot}.`);
+  const ans=cnt[3]+cnt[4];return Q(`<p class="q">${intro} How many ribbons are longer than ½ inch?</p>`+fig,ans,numCh(ans,[-3,-2,-1,1,2,3]),`Longer than 1/2 means 3/4 and 1. ${cnt[3]} + ${cnt[4]} = ${ans}.`)
+ }},
+ quad:{dom:'geo',name:'Shapes & Lines',sub:'Quadrilaterals, parallel',gen(){
+  const S={square:['70,20 150,20 150,100 70,100','All 4 sides are equal and all 4 corners are right angles.'],rectangle:['40,35 180,35 180,105 40,105','It has 4 right angles, and the sides are not all the same length.'],rhombus:['110,12 170,70 110,128 50,70','All 4 sides are equal and opposite sides are parallel, but the corners are not right angles.'],parallelogram:['70,35 190,35 150,105 30,105','Opposite sides are parallel and equal, with no right angles.'],trapezoid:['70,35 150,35 190,105 30,105','It has exactly 1 pair of parallel sides.'],kite:['110,10 160,60 110,130 60,60','It has two pairs of equal sides that touch each other, and no parallel sides.']};
+  const all=Object.keys(S),t=rnd(0,2);
+  if(t===0){const k=pick(all),fig=`<svg class="fig" viewBox="0 0 220 140" width="260"><polygon points="${S[k][0]}" class="ln" stroke-linejoin="round"/></svg>`;
+   return Q(`<p class="q">${pick(CREW).n} drew this shape. What is its most specific name?</p>`+fig,k,strCh(k,all.filter(x=>x!==k),v=>v),S[k][1])}
+  if(t===1){const P=[['Which shape has exactly one pair of parallel sides?','trapezoid'],['Which shape has 4 equal sides and 4 right angles?','square'],['Which shape has 4 right angles but sides that are not all equal?','rectangle'],['Which shape has two pairs of equal sides that touch each other?','kite'],['Which shape has 4 equal sides but no right angles?','rhombus']],[qq,k]=pick(P);
+   return Q(`<p class="q">${qq}</p>`,k,strCh(k,all.filter(x=>x!==k),v=>v),S[k][1])}
+  const kind=pick(['parallel','perpendicular','neither']),L={parallel:'M30 40L190 40M30 100L190 100',perpendicular:'M110 15V125M40 70H180',neither:'M40 30L180 110M40 110L180 55'},
+   H={parallel:'Parallel lines never cross and stay the same distance apart.',perpendicular:'Perpendicular lines cross to make a square corner (90°).',neither:'These lines cross, but not at a square corner, and they are not parallel.'};
+  return Q(`<p class="q">${pick(CREW).n} drew two lines. Are they parallel, perpendicular, or neither?</p><svg class="fig" viewBox="0 0 220 140" width="260"><path class="ln" d="${L[kind]}"/></svg>`,kind,strCh(kind,['parallel','perpendicular','neither'],v=>v),H[kind])
+ }},
+ mix:{dom:'mix',name:"Ellie's Mix",sub:'A bit of everything',gen(){
+  const w=[['mult',3],['frac',3],['dec',1],['multi',2],['ang',2],['quad',3],['conv',2],['line',1],['area',1],['fac',1]],cn=counts(),pool=w.filter(([k])=>(cn[k]||0)<tmax()).flatMap(([k,n])=>Array(n).fill(k)),k=pick(pool),g=modes[k].gen();
+  g.html=`<small class="tag">${modes[k].name}</small>`+g.html;g.topic=k;return g}}
+};
+const PTS={easy:10,med:20,hard:30},BONUS=50,CI_PTS=100,CI_DAYS=7,REVIEW_SECS=30,AWAY_SECS=10,MULT=[1,1,.5,.25];
+const TIER={arr:'easy',time:'easy',fac:'easy',dec:'med',big:'med',area:'med',ang:'med',line:'med',conv:'med',frac:'med',quad:'med',mult:'hard',multi:'hard'};
+const MIXP=['mult','frac','dec','multi','ang','quad','conv','line','area','fac'];
+const TN={easy:'Easy',med:'Medium',hard:'Hard'},BT=['multi','mult','frac','quad','ang','line','conv','area'];
+const REV={
+frac:`A fraction names equal parts of a whole. The <b>bottom</b> number is how many equal parts; the <b>top</b> number is how many you have.<br><br>To find a fraction of a number: divide by the bottom, then multiply by the top. Example: 3/4 of 8 → 8 ÷ 4 = 2, then 2 × 3 = 6.<br><br>Same bottom number? Add or subtract only the tops and keep the bottom: 5/8 − 2/8 = 3/8.<br><br>Equivalent fractions: multiply the top and bottom by the same number. 1/2 = 3/6.`,
+arr:`An array is rows and columns. Rows × number in each row = total. Example: 4 rows of 6 = 24.<br><br>Division undoes multiplication: 24 ÷ 4 = 6 because 4 × 6 = 24. Skip counting helps you check your work.`,
+time:`Add and subtract big numbers one place at a time: hundreds, tens, then ones.<br><br>1 hour = 60 minutes. For 2 hours 15 minutes: 2 × 60 = 120, then 120 + 15 = 135 minutes.<br><br>Groups of 8 counts: skip count by 8s (8, 16, 24 ...).`,
+big:`Place value from the right: ones, tens, hundreds, thousands, ten thousands.<br><br>To round, look at the digit to the right of your place. 5 or more: round up. 4 or less: stay the same.<br><br>Break numbers apart to multiply: 6 × 23 = 6 × 20 + 6 × 3 = 120 + 18 = 138.`,
+ang:`Acute: smaller than 90°. Right: exactly 90°. Obtuse: more than 90° but less than 180°. Straight: 180°.<br><br>Protractor: put the center on the corner, line one side up with 0, and read the number where the other side crosses. Check: acute angles should have small numbers.<br><br>Two angles that make a square corner add to 90°. On a straight line they add to 180°.`,
+area:`Area (square units) = length × width. Perimeter (distance around) = add all four sides, or 2 × (length + width).<br><br>Missing side: divide the area by the side you know. Area 24 and length 6 → width = 24 ÷ 6 = 4.`,
+dec:`Tenths: 1/10 = 0.1, so 7/10 = 0.7. Hundredths: 1/100 = 0.01, so 47/100 = 0.47.<br><br>To compare decimals, compare the ones first, then tenths, then hundredths. 3.4 is bigger than 2.9.<br><br>Money helps: $0.35 is 35/100 of a dollar.`,
+fac:`A factor divides a number evenly with nothing left over. Factors of 12: 1, 2, 3, 4, 6, 12.<br><br>Multiples come from skip counting. Multiples of 6: 6, 12, 18, 24.<br><br>Patterns: look at how much the numbers change each step to find the rule, then use it for the next number.`,
+mult:`Break numbers apart (place value): 3 × 245 = 3 × 200 + 3 × 40 + 3 × 5 = 600 + 120 + 15 = 735.<br><br>Two-digit × two-digit: 23 × 14 = 23 × 10 + 23 × 4 = 230 + 92 = 322.<br><br>Division: think multiplication. 96 ÷ 4 asks 4 × ? = 96.`,
+multi:`Read the whole problem, find each step, and solve one step at a time.<br><br>Remainders: if the leftovers still need a space (a box, a sheet, a seat), round <b>up</b>. If the question asks what is left over, the remainder <b>is</b> the answer.`,
+conv:`Big unit to small unit: <b>multiply</b>. Small unit to big unit: <b>divide</b>.<br><br>1 m = 100 cm, 1 km = 1,000 m, 1 kg = 1,000 g, 1 L = 1,000 mL, 1 ft = 12 in, 1 yd = 3 ft, 1 lb = 16 oz, 1 gal = 4 qt, 1 hr = 60 min.`,
+line:`A line plot shows data on a number line. Each X is one item.<br><br>To find how many are at one number, count the Xs above it. For the total, count every X. For "longer than 1/2", only count the Xs to the right of 1/2.`,
+quad:`Quadrilaterals have 4 sides. Parallel lines never meet. Perpendicular lines cross at a square corner (90°).<br><br>Square: 4 equal sides and 4 right angles. Rectangle: 4 right angles. Rhombus: 4 equal sides. Parallelogram: 2 pairs of parallel sides. Trapezoid: exactly 1 pair of parallel sides. Kite: 2 pairs of equal sides that touch.`};
+const KEY='ecm_v2',esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=s=>s>=60?Math.floor(s/60)+'m '+(s%60)+'s':s+'s';
+const dk=d=>{d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const hash=s=>[...s].reduce((h,c)=>Math.imul(h^c.charCodeAt(0),16777619)>>>0,2166136261),ph=p=>String(hash('ecm'+p));
+const dt=t=>new Date(t).toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+function seeded(seed,fn){const o=Math.random;let a=seed>>>0;Math.random=()=>{a=(a+0x6D2B79F5)>>>0;let t=a;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296};try{return fn()}finally{Math.random=o}}
+function plain(h){const d=document.createElement('div');d.innerHTML=h;d.querySelectorAll('.frac').forEach(f=>{const t=f.firstChild.textContent+'/'+f.querySelector('i').textContent;f.textContent=t});d.querySelectorAll('svg,.stage,.tag').forEach(e=>e.remove());return d.textContent.replace(/\s+/g,' ').trim()}
+
+let S,docRef=null,saveT,mode='mix',ctx={type:'practice'},q=null,tries=0,done=false,wrong=new Set(),wrongTxt=[],qt={a:0,s:0,h:null},view='q',note='',fb='',rv=0,pOK=false;
+const blank=()=>({pts:0,earned:0,bank:200,bday:dk(),cfg:{daily:200,quiet:'20:00',scale:.5,topicMax:10},lastCI:0,streak:0,since:0,log:[],sess:[],bonus:{},ci:[],redeem:[],away:[],pin:null,start:Date.now()});
+function saveNow(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}if(docRef)docRef.set(S).catch(()=>{$('sv').textContent='⚠️ Could not sync. Saved on this device.'})}
+function save(){clearTimeout(saveT);saveT=setTimeout(saveNow,500)}
+const trim=()=>{S.log=S.log.slice(-300);S.sess=S.sess.slice(-40);S.away=S.away.slice(-60)};
+function touchSess(){const n=Date.now(),l=S.sess[S.sess.length-1];if(!l||n-l.end>9e5)S.sess.push({s:n,end:n,q:0,ok:0,pts:0});else l.end=n}
+var limitTxt='';
+function counts(){const t=dk(),c={};S.log.forEach(e=>{if(e.type==='practice'&&!e.void&&!e.abandoned&&dk(new Date(e.t))===t)c[e.topic]=(c[e.topic]||0)+1});return c}
+function tmax(){return S.cfg.topicMax>0?S.cfg.topicMax:10}
+function limitMsg(key){const c=counts();if(key==='mix')return MIXP.some(k=>(c[k]||0)<tmax())?'':'You finished your daily questions in every Mix topic. Pick a topic from the list, or come back tomorrow!';
+ return (c[key]||0)>=tmax()?`You already answered ${tmax()} ${modes[key].name} questions today. Great work! Pick a different topic from the list, or come back tomorrow.`:''}
+function limitView(){$('card').innerHTML=`<p class="q">⭐ Nice work!</p><p>${limitTxt}</p>`}
+const sc=()=>S.cfg.scale>0?S.cfg.scale:.5;
+const val=()=>Math.round(q.base*MULT[Math.min(tries,3)]);
+const qStart=()=>{qt={a:0,s:Date.now(),h:null}};
+const ans=()=>plain(q.choices.find(c=>String(c.k)===String(q.answer)).h);
+const entry=o=>Object.assign({t:Date.now(),type:ctx.type,date:ctx.date||null,topic:q.topic,tier:q.tier,tries,wrong:wrongTxt.slice(),secs:Math.round((qt.a+(qt.h?0:Date.now()-qt.s))/1000),rv,text:plain(q.html),ans:ans()},o);
+
+function build(key){const g=modes[key].gen();g.topic=g.topic||key;g.tier=ctx.type==='practice'?TIER[g.topic]:ctx.type;g.base=ctx.type==='checkin'?CI_PTS:Math.max(1,Math.round((ctx.type==='bonus'?BONUS:PTS[TIER[g.topic]])*sc()));return g}
+function reset(keep){tries=0;done=false;wrong=new Set();wrongTxt=[];fb='';if(!keep)rv=0;qStart();view=blocked()?'closed':'q';touchSess();draw()}
+function newQ(key,keep){if(q&&!done&&tries>0&&view==='q'&&!keep)S.log.push(entry({abandoned:1}));key=key||(ctx.type==='practice'?mode:ctx.topic);if(ctx.type==='practice'&&!blocked()){const m=limitMsg(key);if(m){q=null;limitTxt=m;fb='';view='limit';draw();return}}
+ q=build(key);if(ctx.type!=='practice')ctx.topic=q.topic;reset(keep)}
+function startBonus(d){ctx={type:'bonus',date:d};q=seeded(hash(d),()=>build(pick(BT)));ctx.topic=q.topic;reset()}
+function startCI(){const T=[pick(['mult','frac','dec','big']),pick(['multi','fac']),pick(['conv','line','area','time']),pick(['quad','ang']),pick(['multi','mult','frac','quad'])];ctx={type:'checkin',i:0,T,pts:0,res:[],topic:T[0]};newQ(T[0])}
+function pickAns(i){if(done)return;const c=q.choices[i];
+ if(String(c.k)===String(q.answer))return fin();
+ tries++;wrong.add(i);wrongTxt.push(plain(c.h));
+ fb=tries===1?'Not quite. You get one free try for the same points!':`Not quite. Fewer choices are left, so this question is now worth ${val()} pts. Think it through, or review the topic.`;draw()}
+function fin(){done=true;const full=val(),first=tries===0,cap=ctx.type!=='checkin',p=cap?Math.min(full,S.bank):full;if(cap)S.bank-=p;S.pts+=p;S.earned+=p;touchSess();const se=S.sess[S.sess.length-1];se.q++;se.pts+=p;if(first)se.ok++;
+ S.log.push(entry({pts:p,full:full}));let extra='';
+ if(ctx.type==='practice'){S.since++;if(first){S.streak++;if(S.streak%5===0){const b=Math.min(Math.max(1,Math.round(10*sc())),S.bank);S.bank-=b;S.pts+=b;S.earned+=b;se.pts+=b;if(b)extra=` 🔥 ${S.streak} in a row: +${b} bonus!`}}else S.streak=0}
+ else if(ctx.type==='bonus')S.bonus[ctx.date]={t:Date.now(),pts:p};
+ else{ctx.pts+=p;ctx.res.push({topic:q.topic,tries,pts:p})}
+ fb=(first?`🎉 Correct! +${p} pts`:`✅ You got it! +${p} pts (less because it took ${tries+1} tries)`)+(p<full?' That was the last of your points for now.':'')+extra;trim();save();draw()}
+function nxt(){note='';
+ if(ctx.type==='checkin'){if(ctx.i<4){ctx.i++;ctx.topic=ctx.T[ctx.i];newQ(ctx.topic)}else{S.ci.push({t:Date.now(),pts:ctx.pts,res:ctx.res});S.lastCI=Date.now();save();view='ciDone';draw()}}
+ else if(ctx.type==='bonus'){ctx={type:'practice'};view='bonus';draw()}
+ else newQ()}
+function startReview(){note='';if(tries>0)S.log.push(entry({abandoned:1}));rv++;view='review';draw()}
+
+document.addEventListener('visibilitychange',()=>{const live=q&&!done&&view==='q';
+ if(document.hidden){if(live){qt.a+=Date.now()-qt.s;qt.h=Date.now()}return}
+ if(!qt.h)return;const away=Math.round((Date.now()-qt.h)/1000);qt.h=null;qt.s=Date.now();if(!live)return;
+ S.away.push({t:Date.now(),s:away,topic:q.topic});
+ if(away>AWAY_SECS){S.log.push(entry({void:1}));note=`You were away for ${away} seconds, so that question was skipped with no points. Please stay on this screen while you work.`;newQ(undefined,true)}
+ save();draw()});
+document.addEventListener('contextmenu',e=>e.preventDefault());
+addEventListener('pagehide',saveNow);
+
+function hdr(){const ciWait=Math.max(0,Math.ceil((CI_DAYS*864e5-(Date.now()-(S.lastCI||S.start)))/864e5)),ready=ciWait===0,d=S.cfg.daily;
+ $('top').innerHTML=`<div class="pts"><b>${S.pts.toLocaleString()}</b> pts <span>= $${(S.pts/100).toFixed(2)} squishy value</span></div>
+ <div class="goal">💰 Every 100 points = $1 toward a squishy!</div>
+ <div class="goal">🎯 <b>${S.bank}</b> points left to earn${S.bank>d?'. You saved these up while you were away. No rush, they will wait for you!':' today. Unused points roll over.'}</div>
+ <div class="btns"><button id="bPr">Practice</button><button id="bBo">⭐ Bonus${S.bonus[dk()]?' ✅':''}</button><button id="bCi"${ready?'':' class="dim"'}>🏆 Check-in</button></div>
+ <div class="sm">🔥 ${S.streak} in a row. ${ready?'Check-in is ready: 500 pts!':`Check-in unlocks in ${ciWait} day${ciWait>1?'s':''}.`}</div>`;
+ $('bPr').onclick=()=>{note='';if(ctx.type==='practice'&&q&&view==='q')return;ctx={type:'practice'};newQ()};
+ $('bBo').onclick=()=>{note='';view='bonus';draw()};
+ $('bCi').onclick=()=>{note='';if(ready)return startCI();if(ctx.type!=='practice'||view!=='q'){ctx={type:'practice'};newQ()}note=`The Check-in unlocks in ${ciWait} day${ciWait>1?'s':''}.`;draw()}}
+function tabs(){if(ctx.type!=='practice'||(view!=='q'&&view!=='limit')){$('tabs').innerHTML='';return}const cn=counts();
+ $('tabs').innerHTML='<select id="sel" aria-label="Choose a topic">'+Object.entries(DOMS).map(([d,t])=>`<optgroup label="${t}">`+Object.entries(modes).filter(([k,m])=>m.dom===d).map(([k,m])=>`<option value="${k}"${k===mode?' selected':''}>${k==='mix'?m.name+' ('+m.sub+')':m.name+' ('+(cn[k]||0)+'/'+tmax()+')'}</option>`).join('')+'</optgroup>').join('')+'</select>';
+ $('sel').onchange=e=>{mode=e.target.value;note='';newQ()}}
+function qView(){const lbl=ctx.type==='bonus'?`⭐ Daily Bonus: ${val()} pts`:ctx.type==='checkin'?`🏆 Check-in ${ctx.i+1} of 5: ${val()} pts`:`${TN[q.tier]} question: ${val()} pts`;
+ const nl=ctx.type==='checkin'?(ctx.i<4?'Next part':'See my results'):ctx.type==='bonus'?'Back to bonus days':'Next question';
+ $('card').innerHTML=(note?`<div class="note">${note}</div>`:'')+`<div class="badge">${lbl}</div>`+q.html+`<div class="choices">${q.choices.map((c,i)=>`<button class="ch${wrong.has(i)?' wrong':''}${done&&String(c.k)===String(q.answer)?' right':''}" data-i="${i}"${wrong.has(i)||done?' disabled':''}>${c.h}</button>`).join('')}</div><div class="fb" role="status">${fb}</div>`
+ +(done?`<div class="hint">How to solve it: ${q.hint}</div><button class="next" id="nx">${nl}</button>`:ctx.type==='checkin'?'':`<button class="rvw" id="rv">📖 Review this topic first (${REVIEW_SECS} sec)</button>`);
+ document.querySelectorAll('.ch').forEach(b=>b.onclick=()=>pickAns(+b.dataset.i));
+ if($('nx'))$('nx').onclick=nxt;if($('rv'))$('rv').onclick=startReview}
+function reviewView(){const end=Date.now()+REVIEW_SECS*1000;
+ $('card').innerHTML=`<p class="q">📖 Review: ${modes[q.topic].name}</p><div class="rev">${REV[q.topic]}</div><p class="hint">You will get a brand new question after the review.</p><button class="next" id="rb" disabled>Back to question (${REVIEW_SECS})</button>`;
+ const iv=setInterval(()=>{const b=$('rb');if(!b||view!=='review'){clearInterval(iv);return}const n=Math.ceil((end-Date.now())/1000);
+  if(n<=0){clearInterval(iv);b.disabled=false;b.textContent='Go to a new question';b.onclick=()=>newQ(q.topic,true)}else b.textContent=`Back to question (${n})`},250)}
+function bonusView(){const first=dk(new Date(S.start)),days=[];for(let i=0;i<14;i++){const d=new Date();d.setDate(d.getDate()-i);const k=dk(d);if(k>=first||i===0)days.push([k,i])}
+ $('card').innerHTML=`<p class="q">⭐ Daily Bonus Questions</p><p class="hint">Each day has a ${BONUS}-point bonus question. Missed a day? You can finish it any time. Bonus points count toward your daily points.</p>`+days.map(([k,i])=>{const b=S.bonus[k],l=i===0?'Today':new Date(k+'T12:00:00').toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});return`<button class="day${b?' dn':''}" data-d="${k}"${b?' disabled':''}>${l}<small>${b?'✅ +'+b.pts+' pts':'⭐ '+BONUS+' pts'}</small></button>`}).join('');
+ document.querySelectorAll('.day:not(.dn)').forEach(b=>b.onclick=()=>startBonus(b.dataset.d))}
+function ciDone(){$('card').innerHTML=`<p class="q">🏆 Check-in complete!</p><p>You earned <b>${ctx.pts} of 500</b> points.</p>`+ctx.res.map(x=>`<div class="mq">${modes[x.topic].name}: ${x.tries===0?'✅ first try':'↻ '+(x.tries+1)+' tries'} (+${x.pts})</div>`).join('')+`<button class="next" id="nx">Back to practice</button>`;
+ $('nx').onclick=()=>{ctx={type:'practice'};newQ()}}
+function exitP(){pOK=false;ctx={type:'practice'};newQ()}
+function parentView(){const c=$('card');
+ if(!S.pin){c.innerHTML=`<p class="q">Parent setup</p><p>Choose a 4-digit PIN for viewing progress and taking points off when Ellie gets a squishy.</p><input id="p1" type="password" inputmode="numeric" maxlength="4" placeholder="New PIN"><input id="p2" type="password" inputmode="numeric" maxlength="4" placeholder="Confirm PIN"><div class="fb" id="pm"></div><button class="next" id="pg">Save PIN</button><button class="rvw" id="px">Back</button>`;
+  $('pg').onclick=()=>{const a=$('p1').value;if(!/^\d{4}$/.test(a))return $('pm').textContent='Use exactly 4 digits.';if(a!==$('p2').value)return $('pm').textContent='The PINs do not match.';S.pin=ph(a);pOK=true;save();parentView()};$('px').onclick=exitP;return}
+ if(!pOK){c.innerHTML=`<p class="q">Parent PIN</p><input id="p1" type="password" inputmode="numeric" maxlength="4" placeholder="4-digit PIN"><div class="fb" id="pm"></div><button class="next" id="pg">Open</button><button class="rvw" id="px">Back</button>`;
+  $('pg').onclick=()=>{if(ph($('p1').value)===S.pin){pOK=true;parentView()}else $('pm').textContent='Wrong PIN.'};$('px').onclick=exitP;return}
+ const A=S.log.filter(e=>!e.void),ft=A.filter(e=>e.tries===0&&!e.abandoned).length,sec=A.reduce((a,e)=>a+e.secs,0),T={};
+ A.forEach(e=>{const t=T[e.topic]=T[e.topic]||{n:0,f:0,s:0};t.n++;t.s+=e.secs;if(e.tries===0&&!e.abandoned)t.f++});
+ const miss=A.filter(e=>e.tries>0).slice(-15).reverse(),vd=S.log.filter(e=>e.void).length;
+ c.innerHTML=`<p class="q">Parent dashboard</p><div class="sumg"><div><b>${S.pts}</b>points = $${(S.pts/100).toFixed(2)}</div><div><b>${A.length}</b>questions</div><div><b>${A.length?Math.round(ft/A.length*100):0}%</b>right first try</div><div><b>${fmt(sec)}</b>time on questions</div></div><div class="mq">Points available to earn now: <b>${S.bank}</b> (adds ${S.cfg.daily} per day, saves up to ${S.cfg.daily*5}). Check-in points do not count against this.</div>
+ <details open><summary>Redeem a squishy</summary><input id="rp" type="number" step="0.01" min="0" placeholder="Squishy price in $ (100 pts = $1)"><input id="rn" type="text" placeholder="Note (optional)"><button class="next" id="rd">Deduct points</button>${S.redeem.slice(-5).reverse().map(r=>`<div class="mq">${dt(r.t)}: −${r.pts} pts ${esc(r.note||'')}</div>`).join('')}</details>
+ <details><summary>Add points</summary><p class="hint">For chores, extra effort, or fixing a mistake. These do not count against the daily limit.</p><input id="ap" type="number" min="1" step="1" placeholder="Points to add"><input id="an" type="text" placeholder="Reason (optional)"><button class="next" id="ad">Add points</button>${(S.adds||[]).slice(-5).reverse().map(r=>`<div class="mq">${dt(r.t)}: +${r.pts} pts ${esc(r.note||'')}</div>`).join('')}</details>
+ <details><summary>By topic</summary><table class="tbl"><tr><th>Topic</th><th>Qs</th><th>1st try</th><th>Avg</th><th>Today</th></tr>${Object.entries(T).map(([k,t])=>`<tr><td>${modes[k].name}</td><td>${t.n}</td><td>${Math.round(t.f/t.n*100)}%</td><td>${fmt(Math.round(t.s/t.n))}</td><td>${counts()[k]||0}</td></tr>`).join('')}</table></details>
+ <details><summary>Missed questions (${miss.length})</summary>${miss.map(e=>`<div class="mq"><small>${dt(e.t)}, ${modes[e.topic].name}, ${fmt(e.secs)}, ${e.tries+1} tries${e.abandoned?', left to review':''}${e.rv?', used review':''}</small><br>${esc(e.text)}<br>Wrong picks: ${esc(e.wrong.join(', '))}<br>Correct: <b>${esc(e.ans)}</b></div>`).join('')||'None yet.'}</details>
+ <details><summary>Sessions</summary>${S.sess.slice(-8).reverse().map(s=>`<div class="mq">${dt(s.s)}: ${Math.max(1,Math.round((s.end-s.s)/6e4))} min, ${s.q} questions, ${s.ok} right first try, +${s.pts} pts</div>`).join('')||'None yet.'}</details>
+ <details><summary>Left the app (${S.away.length})</summary><div class="mq">${vd} question${vd===1?'':'s'} skipped for being away over ${AWAY_SECS}s.</div>${S.away.slice(-8).reverse().map(a=>`<div class="mq">${dt(a.t)}: away ${a.s}s during ${modes[a.topic].name}</div>`).join('')}</details>
+ <details><summary>Check-ins and bonus days</summary><div class="mq">Bonus days done: ${Object.keys(S.bonus).length}</div>${S.ci.slice(-6).reverse().map(x=>`<div class="mq">${dt(x.t)}: check-in ${x.pts} of 500</div>`).join('')}</details>
+ <details><summary>Daily limit and quiet hours</summary><p class="hint">Question values as a percent of the standard (easy 10, medium 20, hard 30, bonus 50). 50 means half.</p><input id="cm" type="number" min="1" max="200" value="${Math.round(sc()*100)}"><p class="hint">Points Ellie can earn per day. Unused points roll over (up to 5 days).</p><input id="cd" type="number" min="0" value="${S.cfg.daily}"><p class="hint">Most questions Ellie can answer in one topic per day.</p><input id="ct" type="number" min="1" value="${tmax()}"><p class="hint">Math closes at this time each evening (until 6 AM). Clear it to turn off.</p><input id="cq" type="time" value="${S.cfg.quiet||''}"><button class="rvw" id="cs">Save</button></details>
+ <details><summary>Settings</summary><button class="rvw" id="bk">Copy a backup of all progress</button><button class="rvw" id="rt">Restore from a backup</button><button class="rvw" id="cp">Change PIN</button><button class="rvw" id="rs">Erase all progress</button></details><button class="next" id="px">Done (back to Ellie)</button>`;
+ $('px').onclick=exitP;
+ $('cs').onclick=()=>{const d=parseInt($('cd').value);S.cfg.daily=d>=0?d:200;S.cfg.quiet=$('cq').value||'';{const t=parseInt($('ct').value);S.cfg.topicMax=t>0?t:10}{const m=parseInt($('cm').value);S.cfg.scale=m>0?m/100:.5}saveNow();alert('Saved.');parentView();hdr()};
+ $('ad').onclick=()=>{const p=Math.round(parseFloat($('ap').value));if(!(p>0&&p<=100000))return alert('Enter the number of points to add.');if(!confirm(`Add ${p} points to Ellie's balance?`))return;S.adds=S.adds||[];S.adds.push({t:Date.now(),pts:p,note:$('an').value});S.pts+=p;saveNow();parentView();hdr()};
+ $('rd').onclick=()=>{const p=Math.round(parseFloat($('rp').value)*100);if(!(p>0))return alert('Enter the squishy price.');if(p>S.pts)return alert(`Only ${S.pts} points available.`);if(!confirm(`Deduct ${p} points ($${(p/100).toFixed(2)})?`))return;S.pts-=p;S.redeem.push({t:Date.now(),pts:p,note:$('rn').value});saveNow();parentView();hdr()};
+ $('bk').onclick=async()=>{const t=JSON.stringify(S);try{await navigator.clipboard.writeText(t);alert('Backup copied. Paste it into Notes or a message to yourself.')}catch(e){prompt('Copy this backup text:',t)}};
+ $('rt').onclick=()=>{const t=prompt('Paste your backup text');if(!t)return;try{const d=JSON.parse(t);if(typeof d.pts!=='number')throw 0;S=Object.assign(blank(),d);pOK=false;saveNow();alert('Restored.');ctx={type:'practice'};newQ()}catch(e){alert('That backup text did not work.')}};
+ $('cp').onclick=()=>{const n=prompt('New 4-digit PIN');if(n&&/^\d{4}$/.test(n)){S.pin=ph(n);saveNow();alert('PIN changed.')}else if(n)alert('PIN must be 4 digits.')};
+ $('rs').onclick=()=>{if(prompt('Type RESET to erase all points and history.')==='RESET'){S=blank();pOK=false;saveNow();ctx={type:'practice'};newQ()}}}
+function accrue(){const t=dk();if(S.bday===t)return;const d=Math.max(0,Math.round((new Date(t+'T12:00:00')-new Date(S.bday+'T12:00:00'))/864e5));S.bank=Math.min(S.cfg.daily*5,S.bank+d*S.cfg.daily);S.bday=t;save()}
+function quiet(){const c=S.cfg.quiet;if(!c)return false;const[h,m]=c.split(':').map(Number),n=new Date(),mm=n.getHours()*60+n.getMinutes();return mm>=h*60+m||mm<360}
+function blocked(){if(quiet())return{t:'😴 Math is closed for tonight',m:'Your points are safe, and your unused points are saved for tomorrow. See you then!'};
+ if(ctx.type!=='checkin'&&S.bank<=0)return{t:'🎉 You earned all your points for today!',m:`Great work! Tomorrow you get ${S.cfg.daily} more points to earn. Nothing is lost, and unused points roll over.`};return null}
+function closedView(){const w=blocked()||{t:'All done for now',m:'See you soon!'};$('card').innerHTML=`<p class="q">${w.t}</p><p>${w.m}</p>`}
+function draw(){accrue();hdr();tabs();({limit:limitView,closed:closedView,bonus:bonusView,review:reviewView,parent:parentView,ciDone:ciDone}[view]||qView)()}
+
+async function init(){try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+ let local=null;try{local=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+ try{const res=await Promise.race([(async()=>{const[db,user]=await Promise.all([claude.use('db'),claude.use('user')]);if(!db||!user)return null;const ref=db.doc('data/users/'+await user.id()+'/state'),snap=await ref.get();return{ref,data:snap.exists?snap.data():null}})(),new Promise(r=>setTimeout(()=>r(null),4000))]);
+  if(res){docRef=res.ref;S=res.data||local}}catch(e){}
+ S=Object.assign(blank(),S||local||{});
+ $('sv').textContent=docRef?' ☁️ Progress is saved to your account':' 📱 Progress is saved on this device only';
+ $('crew').innerHTML=CREW.map(c=>`<span>${c.e} ${c.n}</span>`).join('');
+ $('plink').onclick=()=>{note='';view='parent';draw()};
+ ctx={type:'practice'};newQ()}
+init();
+</script>
+</body>
+</html>
